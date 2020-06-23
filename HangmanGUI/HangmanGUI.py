@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import messagebox
 
 run = True
+points = 0
 while run:
     root = Tk()
     root.geometry('1000x1000')
@@ -35,9 +36,8 @@ while run:
               ['b25', 'y', 800, 600], ['b26', 'z', 870, 600]]
 
     for but in button:
-        exec('{}=Button(root,bd=0,command=lambda:check("{}","{}"),bg="Green",activebackground="Yellow",font=10,'
-             'image={})'.format(
-            but[0], but[1], but[0], but[1]))
+        exec('{}=Button(root,bd=0,command=lambda:check("{}","{}"),bg="Green",font=10,'
+             'image={})'.format(but[0], but[1], but[0], but[1]))
         exec('{}.place(x={},y={})'.format(but[0], but[2], but[3]))
 
     han = [['pos1', 'hangman1'], ['pos2', 'hangman2'], ['pos3', 'hangman3'], ['pos4', 'hangman4'], ['pos5', 'hangman5'],
@@ -45,6 +45,10 @@ while run:
     for pos in han:
         exec('{}=Label(root,bg="Green",image={})'.format(pos[0], pos[1]))
     pos1.place(x=250, y=0)
+
+    st = 'Points ' + str(points)
+    points_button = Label(root, text=st, bg="Green", font=("arial", 25))
+    points_button.place(x=0, y=0)
 
 
     def close():
@@ -56,19 +60,20 @@ while run:
 
 
     exit_img = PhotoImage(file='exit.png')
-    exit_pos = Button(root, bd=0, command=close, bg="Green", activebackground="Yellow", font=10, image=exit_img)
-    exit_pos.place(x=770, y=10)
+    exit_pos = Button(root, bd=0, command=close, bg="Green", font=10, image=exit_img)
+    exit_pos.place(x=780, y=0)
 
 
-    def check(letter, button):
-        global num_cor_inp, num_incor_inp, run
-        exec('{}.destroy()'.format(button))
+    def check(letter, buttons):
+        global num_cor_inp, num_incor_inp, run, points
+        exec('{}.destroy()'.format(buttons))
         if letter in word_selected:
-            for i in range(0, len(word_selected)):
-                if word_selected[i] == letter:
+            for j in range(0, len(word_selected)):
+                if word_selected[j] == letter:
                     num_cor_inp += 1
-                    exec('d{}.config(text="{}")'.format(i, letter.upper()))
+                    exec('d{}.config(text="{}")'.format(j, letter.upper()))
             if num_cor_inp == len(word_selected):
+                points += 1
                 answer = messagebox.askyesno('Game over', 'You won\nPlay again')
                 if answer:
                     run = True
